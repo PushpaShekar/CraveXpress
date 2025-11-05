@@ -627,6 +627,33 @@ This happens when `devDependencies` (including TypeScript and @types packages) a
 
 **Why this happens:** Render sets `NODE_ENV=production` by default, which makes npm skip devDependencies unless explicitly told to include them.
 
+### Problem: Module Not Found Error on Render
+
+**Error**: `Error: Cannot find module '/opt/render/project/src/server/dist/server.js'`
+
+**Solution:**
+This happens when the `render.yaml` file is missing the `rootDir` directive or is in the wrong location.
+
+1. Ensure `render.yaml` is in the **project root** (not in `server/` directory)
+2. Add `rootDir: server` to your service configuration:
+   ```yaml
+   services:
+     - type: web
+       name: cravexpress-api
+       env: node
+       rootDir: server  # ← Add this line
+       buildCommand: npm install --include=dev && npm run build
+       startCommand: npm start
+   ```
+3. Commit and push:
+   ```bash
+   git add render.yaml
+   git commit -m "Fix: Add rootDir to render.yaml"
+   git push origin main
+   ```
+
+**Why this happens:** Without `rootDir`, Render runs commands from the repository root, causing path mismatches between build and runtime.
+
 ### Problem: Build Failed on Vercel
 
 **Error**: `Build failed`
