@@ -18,15 +18,16 @@ interface ProductForm {
   tags?: string;
 }
 
-const schema = yup.object({
+const schema: yup.ObjectSchema<ProductForm> = yup.object({
   name: yup.string().required('Product name is required'),
   description: yup.string().required('Description is required'),
   price: yup.number().positive('Price must be positive').required('Price is required'),
   category: yup.string().required('Category is required'),
   stock: yup.number().min(0, 'Stock cannot be negative').required('Stock is required'),
   unit: yup.string().required('Unit is required'),
-  discount: yup.number().min(0).max(100),
-  images: yup.array().of(yup.string().url()).min(1, 'At least one image is required'),
+  discount: yup.number().min(0).max(100).optional(),
+  images: yup.array().of(yup.string().url().required()).min(1, 'At least one image is required').required(),
+  tags: yup.string().optional(),
 });
 
 const EditProduct = () => {

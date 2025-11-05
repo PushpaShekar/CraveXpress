@@ -168,7 +168,7 @@ const ProductDetail = () => {
                   <span className="text-3xl font-bold text-gray-900">
                     ₹{discountedPrice.toFixed(2)}
                   </span>
-                  {product.discount > 0 && (
+                  {(product.discount ?? 0) > 0 && (
                     <>
                       <span className="ml-3 text-xl text-gray-500 line-through">
                         ₹{product.price.toFixed(2)}
