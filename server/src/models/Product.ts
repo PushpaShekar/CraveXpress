@@ -76,9 +76,13 @@ const ProductSchema = new Schema<IProductDocument>(
   }
 );
 
-// Index for search and filtering
-ProductSchema.index({ name: 'text', description: 'text', tags: 'text' });
-ProductSchema.index({ category: 1, price: 1, 'ratings.average': -1 });
+// Indexes for better query performance
+ProductSchema.index({ name: 'text', description: 'text', tags: 'text' }); // Text search
+ProductSchema.index({ category: 1, isActive: 1, price: 1 }); // Category + active filtering
+ProductSchema.index({ seller: 1, isActive: 1 }); // Seller products
+ProductSchema.index({ 'ratings.average': -1 }); // Sort by rating
+ProductSchema.index({ createdAt: -1 }); // Sort by newest
+ProductSchema.index({ isActive: 1, price: 1 }); // Active products by price
 
 export default mongoose.model<IProductDocument>('Product', ProductSchema);
 
