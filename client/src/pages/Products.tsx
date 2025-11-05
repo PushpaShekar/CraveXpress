@@ -30,9 +30,10 @@ const Products = () => {
 
   const fetchCategories = async () => {
     try {
-      const { data } = await api.get('/products/categories');
+      const { data } = await api.get('/products/categories', { timeout: 5000 });
       setCategories(data);
-    } catch (error) {
+    } catch (error: any) {
+      console.error('Categories fetch error:', error);
       toast.error('Failed to fetch categories');
     }
   };
@@ -47,10 +48,12 @@ const Products = () => {
       if (filters.maxPrice) params.append('maxPrice', filters.maxPrice);
       if (filters.sort) params.append('sort', filters.sort);
 
-      const { data } = await api.get(`/products?${params.toString()}`);
-      setProducts(data.products);
-    } catch (error) {
-      toast.error('Failed to fetch products');
+      const { data } = await api.get(`/products?${params.toString()}`, { timeout: 10000 });
+      setProducts(data.products || []);
+    } catch (error: any) {
+      console.error('Products fetch error:', error);
+      toast.error(error.response?.data?.message || 'Failed to fetch products');
+      setProducts([]);
     } finally {
       setLoading(false);
     }
